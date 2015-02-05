@@ -3,22 +3,21 @@ var express = require('express');
 
 var knex = require('knex')(require('../knexfile.js').development);
 var router = express.Router();
+var development = require('../knexfile.js').development;
+var knex = require('knex')(development);
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-
-  res.render('index', { title: 'Twice Twitter' });
+=======
+//  console.log(req.query);
+  var usernameTemp = req.query.username;
+  var passwordTemp = req.query.password;
+  var emailTemp = req.query.email;
+  res.render('index', { title: 'Better Twitter' });
   
-  var username = req.query.username;
-  var password = req.query.password;
   console.log(username + " is user name");
-  //knex('users').columnInfo(name);
-
-//knex('users').insert({name: username}).then(function(user222){console.log(user222); });
-knex('users').insert({name: username, password: password}).then(console.log("here we are"));
-
-//  knex('users').insert({name: passname});
-	
+ 
+knex('users').insert({name: usernameTemp, password: passwordTemp, email: emailTemp}).then();	
 
 });
 
