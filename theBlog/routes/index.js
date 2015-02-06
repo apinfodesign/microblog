@@ -22,14 +22,6 @@ router.get('/', function(req, res, next) {
 	res.render('index', {title: 'Better Twitter'});
 });
 
-function checkLoggedInStatus(){};   //mh
-
-function checkUserExists(){};   //dh
-
-function setCookie(){};   	 //mh
-
-function displayPostsPage(){};    //dh
-
 
 
 //posts display for logged in user
@@ -111,24 +103,47 @@ router.get('/registration/', function (req, res, next) {
  
 }); //close router.get
 
+function checkLoggedInStatus(){};   //mh
+
+function checkUserExists (username, pword, callback){
+	var result= true;
+	
+	knex('users').where({name: username, password: pword}).select('name').then( function (allpairs) { 
+		if (allpairs.length!==0){
+			result=false;
+		}  //if any results returned, then false	
+  	callback(result);
+ 	});
+};   //dh
+
+function setCookie(){};   	 //mh
+
+function displayPostsPage(callback){
+	var contents= '';
+	
+	knex.select('users.name', 'posts.text').from('posts').leftJoin('users', 'posts.author_id', 'users.id').then( function (authortext) { 
+		authortext.forEach( function (obj) {
+			contents += '<h3>';
+			contents += obj.name;
+			contents += '</h3>';
+			contents += '<p>';
+			contents += obj.text;
+			contents += '</p>';
+		});
+  	callback(contents);
+ 	});
+};    //dh
+
 
 function checkUniqueName (username, callback){
 	var result= true;
-	//gets all the names in users
+	
 	knex('users').where({name: username}).select('name').then(function(allnames){ 
 		if (allnames.length!==0){
 			result=false;
 		}  //if any results returned, then false	
   	callback(result);
  	});
- 	
 };
  
-function setLoggedInCookie(){};
-
-function checkLoggedInStatus(){};
-
-
-
-
 module.exports = router;
