@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-	"test":"`npm bin`/jasmine",
+    "test":"`npm bin`/jasmine",
     "start": "node ./bin/www"
   },
   "dependencies": {
