@@ -13,10 +13,6 @@ router.get('/', function(req, res, next) {
   	console.log(usernameReg + " is usernameReg");
  	console.log(passwordReg + " is passwordReg");
 
-//if FALSE, checkUserExists()
-	// if FALSE return "INVALID LOGIN" message
-	// if TRUE setCookie() and displayPostsPage()
-// if TRUE, displayPostsPage()
 
  	postMaster.checkLoggedInStatus(req.cookies, function(result) {
 		console.log('logged in status is ' + result);
