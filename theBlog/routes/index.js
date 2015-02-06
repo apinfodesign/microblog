@@ -8,7 +8,7 @@ var knex = require('knex')(development);
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-=======
+
 //  console.log(req.query);
   var usernameTemp = req.query.username;
   var passwordTemp = req.query.password;
@@ -17,10 +17,9 @@ router.get('/', function(req, res, next) {
   
   console.log(username + " is user name");
  
-knex('users').insert({name: usernameTemp, password: passwordTemp, email: emailTemp}).then();	
+//	knex('users').insert({name: usernameTemp, password: passwordTemp, email: emailTemp}).then();	
 
 });
-
 
 
 module.exports = router;
