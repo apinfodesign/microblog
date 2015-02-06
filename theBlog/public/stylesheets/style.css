@@ -4,5 +4,13 @@ body {
 }
 
 a {
-  color: #00B7FF;
+  color: #000000;
+  text-decoration: none;
+  margin: 5px;
+}
+
+nav {
+	margin:0 auto;
+	width: auto;
+	text-align: center;
 }
