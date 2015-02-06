@@ -17,19 +17,21 @@ router.get('/', function(req, res, next) {
  	console.log(passwordReg + " is passwordReg");
  
 
-  	res.render('index', { title: 'Lame Twitter' });
+   	res.render('index', { title: 'Lame Twitter' });
   
   	console.log(usernameTemp + " is usernameTemp");
  
-	checkUniqueName(usernameTemp, function(result){ 
+ 	checkUniqueName(usernameTemp, function(result){ 
 		if (result) {
 			knex('users').insert({name: usernameTemp, password: passwordTemp, email: emailTemp}).then();
 		}
 		else{
 			console.log("User name " + usernameTemp + " already exists.")
 		}	
+ 
  });
 });
+ 
 
 
 
@@ -38,9 +40,9 @@ var checkUniqueName = function(username, callback){
 	//gets all the names in users
 	knex('users').where({name: username}).select('name').then(function(allnames){ 
 		if (allnames.length!==0){
-			result=false
-		};  //if any results returned, then false	
-  		callback(result);
+			result=false;
+		}  //if any results returned, then false	
+  	callback(result);
  	});
  	
 };
@@ -53,23 +55,6 @@ var checkLoggedInStatus = function(){};
 
 
 
-
-// var checkUniqueName = function(username){
-// 	var result= true;
-// 	//gets all the names in users
-//  	knex.select('name').from('users').then(function(allnames){ 
-// 			allnames.forEach(function(value){
-//  				if (value.name === username)
-//  				{result=false;
-//  					console.log("false!!!");}
-//   			});
-//   		return(result);
-//  	});
- 	
-  	//for loop over i to n
- 
-	//  if username === name (return false)
-	//  else (return true)
 
 
 
