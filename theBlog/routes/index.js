@@ -13,20 +13,64 @@ router.get('/', function(req, res, next) {
   	console.log(usernameReg + " is usernameReg");
  	console.log(passwordReg + " is passwordReg");
 
-	//checkLoggedInStatus()   //via cookie, does cookie exist?
-		//if FALSE, checkUserExists()
-			// if FALSE return "INVALID LOGIN" message
-			// if TRUE setCookie() and displayPostsPage()
-		// if TRUE, displayPostsPage()
-	
-	res.render('index', {title: 'Better Twitter'});
+//if FALSE, checkUserExists()
+	// if FALSE return "INVALID LOGIN" message
+	// if TRUE setCookie() and displayPostsPage()
+// if TRUE, displayPostsPage()
+
+ 
+	if (checkLoggedInStatus(req.cookies)  //status TRUE
+		{
+ 		console.log ("dipslayPostsPage should happen here")
+ 		//displayPostsPage();
+		}	
+	else  //checkLoggedInStatus is FALSE
+	{
+		if(checkUserExists() )  //status TRUE
+			{
+			setCookie(req.cookies);  //make user logged in
+			//displayPostsPage();    //display posts page
+			console.log("cookie set and ready to display a page")
+			}
+		else   //status of exists is false
+			{
+			console.log("return invalid login message to page!")
+			}
+	};
+
+res.render('index', {title: 'Better Twitter'});
 });
 
-function checkLoggedInStatus(){};   //mh
+
+//read and evaluate cookie - takes cookie object returns true/false
+function checkLoggedInStatus(cookies){
+ 	var date = new Date();
+	var previousCookieTime = cookies['last-login-time']; //get old cookie value
+
+	console.log("Seconds since last visit = " +  (date.getTime() - previousCookieTime)/1000  );
+ 
+ 	if ( ((date.getTime() - previousCookieTime)/1000)  < 60 )
+		{return true }
+	else
+		{return false}
+ };   //mh
+
+	//read cookie
+	//if no cookie return FALSE
+	//if cookie > 5 minutes old return FALSE
+	//if cookie is < 5 minutes old return TRUE
 
 function checkUserExists(){};   //dh
 
-function setCookie(){};   	 //mh
+
+function setCookie(cookies){
+			res.cookie('last-login-time', date.getTime() ) ;
+		 	res.render('index', { title: 'BETTER TWITTER 2'});
+ 
+ 		 	console.log("THIS MANY SECONDS since last visit = " +  
+		 		(date.getTime() - previousCookieTime)/1000  );
+		});
+};  //mh
 
 function displayPostsPage(){};    //dh
 
@@ -123,10 +167,7 @@ function checkUniqueName (username, callback){
  	});
  	
 };
- 
-function setLoggedInCookie(){};
-
-function checkLoggedInStatus(){};
+  
 
 
 
