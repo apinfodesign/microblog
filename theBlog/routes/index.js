@@ -4,27 +4,44 @@ var router = express.Router();
 var development = require('../knexfile.js').development;
 var knex = require('knex')(development);
 
-/* GET REGISTER page. */
+/* GET SIGN IN page. */
 router.get('/', function(req, res, next) {
  
-  var usernameReg = req.query.usernameRegistered;
-  var passwordReg = req.query.passwordRegistered;
+    var usernameReg = req.query.usernameRegistered;
+    var passwordReg = req.query.passwordRegistered;
+
   	console.log(usernameReg + " is usernameReg");
  	console.log(passwordReg + " is passwordReg");
+
+	//checkLoggedInStatus()   //via cookie, does cookie exist?
+		//if FALSE, checkUserExists()
+			// if FALSE return "INVALID LOGIN" message
+			// if TRUE setCookie() and displayPostsPage()
+		// if TRUE, displayPostsPage()
+	
 	res.render('index', {title: 'Better Twitter'});
 });
 
-function checkUniqueName (username, callback){
-	var result= true;
-	//gets all the names in users
-	knex('users').where({name: username}).select('name').then(function(allnames){ 
-		if (allnames.length!==0){
-			result=false;
-		}  //if any results returned, then false	
-  	callback(result);
- 	});
- 	
-};
+function checkLoggedInStatus(){};   //mh
+
+function checkUserExists(){};   //dh
+
+function setCookie(){};   	 //mh
+
+function displayPostsPage(){};    //dh
+
+
+
+//posts display for logged in user
+router.get('/posts', function(req,res,net){
+
+		res.render('posts', { title: 'Better Twitter'  });
+
+});
+
+
+
+
 
 router.get('/registration/', function (req, res, next) {
 
@@ -85,6 +102,18 @@ router.get('/registration/', function (req, res, next) {
  
 }); //close router.get
 
+
+function checkUniqueName (username, callback){
+	var result= true;
+	//gets all the names in users
+	knex('users').where({name: username}).select('name').then(function(allnames){ 
+		if (allnames.length!==0){
+			result=false;
+		}  //if any results returned, then false	
+  	callback(result);
+ 	});
+ 	
+};
  
 function setLoggedInCookie(){};
 
