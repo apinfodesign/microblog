@@ -30,38 +30,47 @@ router.get('/registration/', function (req, res, next) {
 
   var usernameTemp = req.query.username;
   if (usernameTemp === undefined) {
-  	usernameTemp = '';
+  	usernameTemp = [];
   }
   var passwordTemp = req.query.password;
   if (passwordTemp === undefined) {
-  	passwordTemp = '';
+  	passwordTemp = [];
   }
   var emailTemp = req.query.email;
   if (emailTemp === undefined) {
-  	emailTemp = '';
+  	emailTemp = [];
   }
 
   var errorMessage = '';
   var error = false;
-  var usernameFinal = false;
-  var passwordFinal = false;
-  var emailFinal = false;
+  var usernameFinal = '';
+  var passwordFinal = '';
+  var emailFinal = '';
 
-	if (usernameTemp.length < 5) {
+	if (usernameTemp === []) {
+		errorMessage +='<p>Please enter a username</p>';
+		error = true;
+	} else if (usernameTemp.length < 5) {
 		errorMessage +='<p>Invalid Username</p>';
 		error = true;
 	} else {
 		usernameFinal = usernameTemp;
 	}
 	
-	if (passwordTemp.length < 5) {
+	if (passwordTemp === []) {
+		errorMessage +='<p>Please enter a password</p>';
+		error = true;
+	} else if (passwordTemp.length < 5) {
 		errorMessage +='<p>Invalid Password</p>';
 		error = true;
 	} else {
 		passwordFinal = passwordTemp;
 	}
 	
-	if (emailTemp.length < 5) {
+	if (emailTemp === []) {
+		errorMessage +='<p>Please enter an email</p>';
+		error = true;
+	} else if (emailTemp.length < 5) {
 		errorMessage +='<p>Invalid email</p>';
 		error = true;
 	} else {
@@ -71,15 +80,15 @@ router.get('/registration/', function (req, res, next) {
 		checkUniqueName(usernameTemp, function(result){ 
 			if (result) {
 				knex('users').insert({name: usernameTemp, password: passwordTemp, email: emailTemp}).then();
-				res.render('registration', { title: 'Better Twitter', message: errorMessage });
+				res.render('index', { title: 'Better Twitter' });
 			}
 			else{
 				errorMessage ='<p>Username already exists.  Please sign in or choose a different user name.</p>';
-				res.render('registration', { title: 'Better Twitter', message: errorMessage });
+				res.render('registration', { title: 'Better Twitter', message: errorMessage, uname: usernameFinal, pass: passwordFinal, email: emailFinal });
 			}	
 		});
 	} else {
-		res.render('registration', { title: 'Better Twitter', message: errorMessage });
+		res.render('registration', { title: 'Better Twitter', message: errorMessage, uname: usernameFinal, pass: passwordFinal, email: emailFinal });
 	}
 });
 
