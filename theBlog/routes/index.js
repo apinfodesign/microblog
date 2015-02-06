@@ -9,10 +9,8 @@ var passwordReg;
 /* GET SIGN IN page. */
 router.get('/', function(req, res, next) {
  
-
   	console.log(usernameReg + " is usernameReg");
  	console.log(passwordReg + " is passwordReg");
-
 
  	postMaster.checkLoggedInStatus(req.cookies, function(result) {
 		console.log('logged in status is ' + result);
