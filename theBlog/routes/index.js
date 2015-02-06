@@ -10,23 +10,46 @@ router.get('/', function(req, res, next) {
   var usernameTemp = req.query.username;
   var passwordTemp = req.query.password;
   var emailTemp = req.query.email;
-  res.render('index', { title: 'Better Twitter' });
-  
-  console.log(usernameTemp + " is usernameTemp");
- 
+  var errorMessage = '';
+  var error = false;
+  var usernameFinal = false;
+  var passwordFinal = false;
+  var emailFinal = false;
 
-
-
-	checkUniqueName(usernameTemp, function(result){ 
-		if (result) {
-			knex('users').insert({name: usernameTemp, password: passwordTemp, email: emailTemp}).then();
-		}
-		else{
-			console.log("User name " + usernameTemp + " already exists.")
-		}	
-	});
-
-
+	if (usernameTemp.length < 5) {
+		errorMessage +='<p>Invalid Username</p>';
+		error = true;
+	} else {
+		usernameFinal = usernameTemp;
+	}
+	
+	if (passwordTemp.length < 5) {
+		errorMessage +='<p>Invalid Password</p>';
+		error = true;
+	} else {
+		passwordFinal = passwordTemp;
+	}
+	
+	if (emailTemp.length < 5) {
+		errorMessage +='<p>Invalid email</p>';
+		error = true;
+	} else {
+		emailFinal = emailTemp;
+	}
+	if (!error) {
+		checkUniqueName(usernameTemp, function(result){ 
+			if (result) {
+				knex('users').insert({name: usernameTemp, password: passwordTemp, email: emailTemp}).then();
+				res.render('index', { title: 'Better Twitter', message: errorMessage });
+			}
+			else{
+				errorMessage ='<p>Username already exists.  Please sign in or choose a different user name.</p>';
+				res.render('index', { title: 'Better Twitter', message: errorMessage });
+			}	
+		});
+	} else {
+		res.render('index', { title: 'Better Twitter', message: errorMessage });
+	}
 
 });
 
