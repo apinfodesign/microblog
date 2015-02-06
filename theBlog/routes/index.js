@@ -19,9 +19,7 @@ router.get('/', function(req, res, next) {
 		if (result)  //status TRUE
 			{
 				console.log ("dipslayPostsPage should happen here")
-				postMaster.displayPostsPage(function (result) {
-					res.render('posts', {title: 'BETTER TWITTER 2', text: result})
-				});
+				res.redirect('/posts');
 			}	
 		else  //checkLoggedInStatus is FALSE
 		{
@@ -30,9 +28,7 @@ router.get('/', function(req, res, next) {
 				if(result)  //status TRUE
 				{
 					res.cookie('last-login-time', Date.now() ) ;
-					postMaster.displayPostsPage(function (result) {
-						res.render('posts', {title: 'BETTER TWITTER 2', text: result})
-					});
+					res.redirect('/posts');
 
 		//  		 	console.log("THIS MANY SECONDS since last visit = " +  
 		// 		 		(date.getTime() - previousCookieTime)/1000  );
@@ -59,7 +55,7 @@ router.get('/', function(req, res, next) {
 //posts display for logged in user
 router.get('/posts', function(req,res,net){
 	postMaster.displayPostsPage(function (result) {
-		res.render('index', {title: 'BETTER TWITTER 2', message: '<p>Please log in</p>'})
+		res.render('posts', {title: 'BETTER TWITTER 2', text: result})
 	});
 });
 
