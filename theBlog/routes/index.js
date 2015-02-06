@@ -5,12 +5,42 @@ var development = require('../knexfile.js').development;
 var knex = require('knex')(development);
 
 /* GET REGISTER page. */
-router.get('/register', function(req, res, next) {
+router.get('/', function(req, res, next) {
+ 
+  var usernameReg = req.query.usernameRegistered;
+  var passwordReg = req.query.passwordRegistered;
+  	console.log(usernameReg + " is usernameReg");
+ 	console.log(passwordReg + " is passwordReg");
+	res.render('index', {title: 'Better Twitter'});
+});
 
+function checkUniqueName (username, callback){
+	var result= true;
+	//gets all the names in users
+	knex('users').where({name: username}).select('name').then(function(allnames){ 
+		if (allnames.length!==0){
+			result=false;
+		}  //if any results returned, then false	
+  	callback(result);
+ 	});
+ 	
+};
 
-	var usernameTemp = req.query.username;
-	var passwordTemp = req.query.password;
-	var emailTemp = req.query.email;
+router.get('/registration/', function (req, res, next) {
+
+  var usernameTemp = req.query.username;
+  if (usernameTemp === undefined) {
+  	usernameTemp = '';
+  }
+  var passwordTemp = req.query.password;
+  if (passwordTemp === undefined) {
+  	passwordTemp = '';
+  }
+  var emailTemp = req.query.email;
+  if (emailTemp === undefined) {
+  	emailTemp = '';
+  }
+ 
 
   	var errorMessage = '';
  	var error = false;
@@ -42,53 +72,23 @@ router.get('/register', function(req, res, next) {
 		checkUniqueName(usernameTemp, function(result){ 
 			if (result) {
 				knex('users').insert({name: usernameTemp, password: passwordTemp, email: emailTemp}).then();
-				res.render('index', { title: 'Better Twitter', message: errorMessage });
+				res.render('registration', { title: 'Better Twitter', message: errorMessage });
 			}
 			else{
 				errorMessage ='<p>Username already exists.  Please sign in or choose a different user name.</p>';
-				res.render('index', { title: 'Better Twitter', message: errorMessage });
+				res.render('registration', { title: 'Better Twitter', message: errorMessage });
 			}	
 		});
 	} else {
-		res.render('index', { title: 'Better Twitter', message: errorMessage });
+		res.render('registration', { title: 'Better Twitter', message: errorMessage });
 	}
-
-
-
-});
-
-//MAIN SIGN IN AND BLOG PAGE
-router.get('/', function(req, res, next){
-	res.render('index', { title: 'Better Twitter', message: errorMessage });
-
-	  var usernameReg = req.query.usernameRegistered;
- 	 var passwordReg = req.query.passwordRegistered;
-  	console.log(usernameReg + " is usernameReg");
- 	console.log(passwordReg + " is passwordReg");
  
-});
+}); //close router.get
 
+ 
+function setLoggedInCookie(){};
 
-
-var checkUniqueName = function(username, callback){
-	var result= true;
-	//gets all the names in users
-	knex('users').where({name: username}).select('name').then(function(allnames){ 
-		if (allnames.length!==0){
-			result=false;
-		}  //if any results returned, then false	
-  	callback(result);
- 	});
-};
-
-
-
-var setLoggedInCookie = function(){};
-
-var checkLoggedInStatus = function(){};
-
-
-
+function checkLoggedInStatus(){};
 
 
 
