@@ -3,39 +3,32 @@ var router = express.Router();
 var development = require('../knexfile.js').development;
 var knex = require('knex')(development);
 var postMaster = require('../functions.js');
-var usernameReg;
-var passwordReg;
 
 /* GET SIGN IN page. */
 router.get('/', function(req, res, next) {
  
+    var usernameReg = req.query.usernameRegistered;
+    var passwordReg = req.query.passwordRegistered;
+
   	console.log(usernameReg + " is usernameReg");
  	console.log(passwordReg + " is passwordReg");
+
 
  	postMaster.checkLoggedInStatus(req.cookies, function(result) {
 		console.log('logged in status is ' + result);
 		if (result)  //status TRUE
 			{
 				console.log ("dipslayPostsPage should happen here")
-				postMaster.displayPostsPage(function (result) {
-					res.render('posts', {title: 'BETTER TWITTER 2', text: result})
-				});
+				res.redirect('/posts');
 			}	
 		else  //checkLoggedInStatus is FALSE
 		{
-		    usernameReg = req.query.usernameRegistered;
-    		passwordReg = req.query.passwordRegistered;
-
-			postMaster.checkUserExists(usernameReg, passwordReg, function (result, id) {
+			postMaster.checkUserExists(usernameReg, passwordReg, function (result) {
 				console.log('successfull login status is ' + result);
 				if(result)  //status TRUE
-				{    
-					 
+				{
 					res.cookie('last-login-time', Date.now() ) ;
-					res.cookie('authorID', id) ;
-					postMaster.displayPostsPage(function (result) {
-						res.render('posts', {title: 'BETTER TWITTER 2', text: result})
-					});
+					res.redirect('/posts');
 
 		//  		 	console.log("THIS MANY SECONDS since last visit = " +  
 		// 		 		(date.getTime() - previousCookieTime)/1000  );
@@ -46,8 +39,7 @@ router.get('/', function(req, res, next) {
 				}
 				else   //status of exists is false
 				{
-				 res.render('index', {title: 'Better Twitter', message: '<p>Login failed</p>', 
-				                        uName: "", uPassword: "" });
+				 res.render('index', {title: 'Better Twitter', message: '<p>Login failed</p>' });
 				}
 			
 			});
@@ -63,7 +55,7 @@ router.get('/', function(req, res, next) {
 //posts display for logged in user
 router.get('/posts', function(req,res,net){
 	postMaster.displayPostsPage(function (result) {
-		res.render('index', {title: 'BETTER TWITTER 2', message: '<p>Please log in</p>'})
+		res.render('posts', {title: 'BETTER TWITTER 2', text: result})
 	});
 });
 
