@@ -10,6 +10,7 @@ router.get('/', function(req, res, next) {
   var usernameTemp = req.query.username;
   var passwordTemp = req.query.password;
   var emailTemp = req.query.email;
+
   var errorMessage = '';
   var error = false;
   var usernameFinal = false;
@@ -51,6 +52,12 @@ router.get('/', function(req, res, next) {
 		res.render('index', { title: 'Better Twitter', message: errorMessage });
 	}
 
+
+  var usernameReg = req.query.usernameRegistered;
+  var passwordReg = req.query.passwordRegistered;
+  	console.log(usernameReg + " is usernameReg");
+ 	console.log(passwordReg + " is passwordReg");
+ 
 });
 
 var checkUniqueName = function(username, callback){
@@ -64,6 +71,12 @@ var checkUniqueName = function(username, callback){
  	});
  	
 };
+
+
+
+var setLoggedInCookie = function(){};
+
+var checkLoggedInStatus = function(){};
 
 
 

@@ -4,14 +4,24 @@ block content
 	h1= title
 	p Welcome to #{title}
 	p
-	p Register...
+	p Register a New Account...
 	form
-		p Enter User Name:
+		p Create New User Name:
 			input(type='text', name='username')
-		p Enter Password:
+		p Create New Password:
 			input(type='text', name='password')
-		p Enter email:
+		p Enter Email for New Registration:
 			input(type='text', name='email')
 		button Submit
 
+
 	!= message
+
+	p If you are registered, please sign in.
+	form
+		p Enter User Name:
+			input(type='text', name='usernameRegistered')
+		p Enter Password:
+			input(type='text', name='passwordRegistered')
+		button Submit
+
