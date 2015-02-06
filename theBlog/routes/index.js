@@ -6,15 +6,22 @@ var knex = require('knex')(development);
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
+
   var usernameTemp = req.query.username;
   var passwordTemp = req.query.password;
   var emailTemp = req.query.email;
-  res.render('index', { title: 'Better Twitter' });
-  
-  console.log(usernameTemp + " is usernameTemp");
+
+  var usernameReg = req.query.usernameRegistered;
+  var passwordReg = req.query.passwordRegistered;
+  	console.log(usernameReg + " is usernameReg");
+ 	console.log(passwordReg + " is passwordReg");
  
 
- checkUniqueName(usernameTemp, function(result){ 
+  	res.render('index', { title: 'Lame Twitter' });
+  
+  	console.log(usernameTemp + " is usernameTemp");
+ 
+	checkUniqueName(usernameTemp, function(result){ 
 		if (result) {
 			knex('users').insert({name: usernameTemp, password: passwordTemp, email: emailTemp}).then();
 		}
@@ -22,9 +29,9 @@ router.get('/', function(req, res, next) {
 			console.log("User name " + usernameTemp + " already exists.")
 		}	
  });
-
-
 });
+
+
 
 var checkUniqueName = function(username, callback){
 	var result= true;
@@ -37,6 +44,12 @@ var checkUniqueName = function(username, callback){
  	});
  	
 };
+
+
+
+var setLoggedInCookie = function(){};
+
+var checkLoggedInStatus = function(){};
 
 
 
