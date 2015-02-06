@@ -13,40 +13,38 @@ router.get('/', function(req, res, next) {
   	console.log(usernameReg + " is usernameReg");
  	console.log(passwordReg + " is passwordReg");
 
-//if FALSE, checkUserExists()
-	// if FALSE return "INVALID LOGIN" message
-	// if TRUE setCookie() and displayPostsPage()
-// if TRUE, displayPostsPage()
+ 	postMaster.checkLoggedInStatus(req.cookies, function(result) {
+		
+				console.log("found a cookie with value of " + req.cookies['last-login-time']);
+				if(result) //status TRUE user is logged in
+				{
+		 			console.log ("dipslayPostsPage should happen here")
+		 			postMaster.displayPostsPage(function(result){
+		 				res.render('posts', {title: 'Better Twitter', text: result});
+		 			});
+				}	
+				else  //checkLoggedInStatus is FALSE user not logged in
+					{
+						postMaster.checkUserExists(usernameReg, passwordReg, function(result){
 
- 
-	if (postMaster.checkLoggedInStatus(req.cookies, function(result) {
-		return result;
-	})  //status TRUE
-		{
- 		console.log ("dipslayPostsPage should happen here")
- 		//postMaster.displayPostsPage();
-		}	
-	else  //checkLoggedInStatus is FALSE
-	{
-		if(postMaster.checkUserExists() )  //status TRUE
-			{
-			res.cookie('last-login-time', date.getTime() ) ;
-		 	res.render('index', { title: 'BETTER TWITTER 2'});
- 
-//  		 	console.log("THIS MANY SECONDS since last visit = " +  
-// 		 		(date.getTime() - previousCookieTime)/1000  );
-			
-			  //make user logged in
-			//postMaster.displayPostsPage();    //display posts page
-			console.log("cookie set and ready to display a page")
-			}
-		else   //status of exists is false
-			{
-			console.log("return invalid login message to page!")
-			}
-	};
+						if(result)	//status TRUE
+							{
+							res.cookie('last-login-time', Date.now() ) ;
 
-res.render('index', {title: 'Better Twitter'});
+								postMaster.displayPostsPage(function(result){
+			 						res.render('posts', {title: 'Better Twitter', text: result});
+					 			});
+				 						//console.log("cookie set and ready to display a page")
+							}
+						else   //status of exists is false
+							{
+							errorMessage = '<p>Login Failed</p>';
+							res.render('index', {title: 'Better Twitter', message: errorMessage});
+							}
+						});
+					}  //close else
+	});
+
 });
 
 
@@ -117,7 +115,7 @@ router.get('/registration/', function (req, res, next) {
 		emailFinal = emailTemp;
 	}
 	if (!error) {
-		checkUniqueName(usernameTemp, function(result){ 
+		postMaster.checkUniqueName(usernameTemp, function(result){ 
 			if (result) {
 				knex('users').insert({name: usernameTemp, password: passwordTemp, email: emailTemp}).then();
 				res.render('index', { title: 'Better Twitter' });
