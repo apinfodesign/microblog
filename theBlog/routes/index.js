@@ -19,17 +19,25 @@ router.get('/', function(req, res, next) {
 // if TRUE, displayPostsPage()
 
  
-	if (checkLoggedInStatus(req.cookies)  //status TRUE
+	if (postMaster.checkLoggedInStatus(req.cookies, function(result) {
+		return result;
+	})  //status TRUE
 		{
  		console.log ("dipslayPostsPage should happen here")
- 		//displayPostsPage();
+ 		//postMaster.displayPostsPage();
 		}	
 	else  //checkLoggedInStatus is FALSE
 	{
-		if(checkUserExists() )  //status TRUE
+		if(postMaster.checkUserExists() )  //status TRUE
 			{
-			setCookie(req.cookies);  //make user logged in
-			//displayPostsPage();    //display posts page
+			res.cookie('last-login-time', date.getTime() ) ;
+		 	res.render('index', { title: 'BETTER TWITTER 2'});
+ 
+//  		 	console.log("THIS MANY SECONDS since last visit = " +  
+// 		 		(date.getTime() - previousCookieTime)/1000  );
+			
+			  //make user logged in
+			//postMaster.displayPostsPage();    //display posts page
 			console.log("cookie set and ready to display a page")
 			}
 		else   //status of exists is false
@@ -42,33 +50,6 @@ res.render('index', {title: 'Better Twitter'});
 });
 
 
-
-//read and evaluate cookie - takes cookie object returns true/false
-function checkLoggedInStatus(cookies){
- 	var date = new Date();
-	var previousCookieTime = cookies['last-login-time']; //get old cookie value
-
-	console.log("Seconds since last visit = " +  (date.getTime() - previousCookieTime)/1000  );
- 
- 	if ( ((date.getTime() - previousCookieTime)/1000)  < 60 )
-		{return true }
-	else
-		{return false}
- };   //mh
-
-	//read cookie
-	//if no cookie return FALSE
-	//if cookie > 5 minutes old return FALSE
-	//if cookie is < 5 minutes old return TRUE
-
-function setCookie(cookies){
-			res.cookie('last-login-time', date.getTime() ) ;
-		 	res.render('index', { title: 'BETTER TWITTER 2'});
- 
- 		 	console.log("THIS MANY SECONDS since last visit = " +  
-		 		(date.getTime() - previousCookieTime)/1000  );
-		});
-};  //mh
 
 
 

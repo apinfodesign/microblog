@@ -51,3 +51,19 @@ describe("displayPostsPage", function () {
 	});
 });
 
+
+
+describe("checkLoggedInStatus", function () {
+	it("should pass true to the callback if cookies['last-login-time'] is within 60 seconds of date.getTime()", function(done) {
+		postMaster.checkLoggedInStatus({'last-login-time': Date.now() - 55000}, function(result) {
+			expect(result).toEqual(true);
+			postMaster.checkLoggedInStatus({'last-login-time': Date.now() - 65000}, function(result) {
+				expect(result).toEqual(false);
+				done();
+			});
+		});
+	});
+});
+
+
+

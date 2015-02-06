@@ -1,7 +1,7 @@
 var development = require('./knexfile.js').development;
 var knex = require('knex')(development);
 
-function checkLoggedInStatus(){};   //mh
+
 
 function checkUserExists (username, pword, callback){
 	var result= true;
@@ -14,7 +14,7 @@ function checkUserExists (username, pword, callback){
  	});
 };   //dh
 
-function setCookie(){};   	 //mh
+
 
 function displayPostsPage(callback){
 	var contents= '';
@@ -44,10 +44,29 @@ function checkUniqueName (username, callback){
  	});
 };
 
+
+//read and evaluate cookie - takes cookie object returns true/false
+function checkLoggedInStatus(cookies, callback){
+	var previousCookieTime = cookies['last-login-time']; //get old cookie value
+
+	console.log("Seconds since last visit = " +  (Date.now() - previousCookieTime)/1000  );
+ 
+ 	if ( ((Date.now() - previousCookieTime)/1000)  < 60 )
+		{callback(true) }
+	else
+		{callback(false) }
+ };   //mh
+
+	//read cookie
+	//if no cookie return FALSE
+	//if cookie > 5 minutes old return FALSE
+	//if cookie is < 5 minutes old return TRUE
+
+
+
 module.exports = {
 	'checkUniqueName': checkUniqueName,
 	'displayPostsPage': displayPostsPage,
-	'setCookie': setCookie,
 	'checkLoggedInStatus': checkLoggedInStatus,
 	'checkUserExists': checkUserExists
 }
