@@ -4,18 +4,19 @@ var router = express.Router();
 var development = require('../knexfile.js').development;
 var knex = require('knex')(development);
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
+/* GET REGISTER page. */
+router.get('/register', function(req, res, next) {
 
-  var usernameTemp = req.query.username;
-  var passwordTemp = req.query.password;
-  var emailTemp = req.query.email;
 
-  var errorMessage = '';
-  var error = false;
-  var usernameFinal = false;
-  var passwordFinal = false;
-  var emailFinal = false;
+	var usernameTemp = req.query.username;
+	var passwordTemp = req.query.password;
+	var emailTemp = req.query.email;
+
+  	var errorMessage = '';
+ 	var error = false;
+ 	var usernameFinal = false;
+ 	var passwordFinal = false;
+ 	var emailFinal = false;
 
 	if (usernameTemp.length < 5) {
 		errorMessage +='<p>Invalid Username</p>';
@@ -53,12 +54,21 @@ router.get('/', function(req, res, next) {
 	}
 
 
-  var usernameReg = req.query.usernameRegistered;
-  var passwordReg = req.query.passwordRegistered;
+
+});
+
+//MAIN SIGN IN AND BLOG PAGE
+router.get('/', function(req, res, next){
+	res.render('index', { title: 'Better Twitter', message: errorMessage });
+
+	  var usernameReg = req.query.usernameRegistered;
+ 	 var passwordReg = req.query.passwordRegistered;
   	console.log(usernameReg + " is usernameReg");
  	console.log(passwordReg + " is passwordReg");
  
 });
+
+
 
 var checkUniqueName = function(username, callback){
 	var result= true;
@@ -69,7 +79,6 @@ var checkUniqueName = function(username, callback){
 		}  //if any results returned, then false	
   	callback(result);
  	});
- 	
 };
 
 
