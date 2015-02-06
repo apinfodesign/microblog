@@ -5,12 +5,16 @@ var knex = require('knex')(development);
 
 function checkUserExists (username, pword, callback){
 	var result= true;
-	
-	knex('users').where({name: username, password: pword}).select('name').then( function (allpairs) { 
+	var id ="";
+	knex('users').where({name: username, password: pword}).select('id').then( function (allpairs) { 
 		if (allpairs.length === 0){
 			result=false;
 		}  //if any results returned, then false	
-  	callback(result);
+		else
+		{
+			id=allpairs[0].id
+		}
+  	callback(result, id);
  	});
 };   //dh
 
@@ -51,7 +55,7 @@ function checkLoggedInStatus(cookies, callback){
 
 	console.log("Seconds since last visit = " +  (Date.now() - previousCookieTime)/1000  );
  
- 	if ( ((Date.now() - previousCookieTime)/1000)  < 60 )
+ 	if ( ((Date.now() - previousCookieTime)/1000)  < 10 )
 		{callback(true) }
 	else
 		{callback(false) }

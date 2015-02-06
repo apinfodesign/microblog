@@ -3,12 +3,12 @@ var router = express.Router();
 var development = require('../knexfile.js').development;
 var knex = require('knex')(development);
 var postMaster = require('../functions.js');
+var usernameReg;
+var passwordReg;
 
 /* GET SIGN IN page. */
 router.get('/', function(req, res, next) {
  
-    var usernameReg = req.query.usernameRegistered;
-    var passwordReg = req.query.passwordRegistered;
 
   	console.log(usernameReg + " is usernameReg");
  	console.log(passwordReg + " is passwordReg");
@@ -25,11 +25,16 @@ router.get('/', function(req, res, next) {
 			}	
 		else  //checkLoggedInStatus is FALSE
 		{
-			postMaster.checkUserExists(usernameReg, passwordReg, function (result) {
+		    usernameReg = req.query.usernameRegistered;
+    		passwordReg = req.query.passwordRegistered;
+
+			postMaster.checkUserExists(usernameReg, passwordReg, function (result, id) {
 				console.log('successfull login status is ' + result);
 				if(result)  //status TRUE
-				{
+				{    
+					 
 					res.cookie('last-login-time', Date.now() ) ;
+					res.cookie('authorID', id) ;
 					postMaster.displayPostsPage(function (result) {
 						res.render('posts', {title: 'BETTER TWITTER 2', text: result})
 					});
@@ -43,7 +48,8 @@ router.get('/', function(req, res, next) {
 				}
 				else   //status of exists is false
 				{
-				 res.render('index', {title: 'Better Twitter', message: '<p>Login failed</p>' });
+				 res.render('index', {title: 'Better Twitter', message: '<p>Login failed</p>', 
+				                        uName: "", uPassword: "" });
 				}
 			
 			});
