@@ -47,8 +47,7 @@ router.get('/', function(req, res, next) {
 				}
 				else   //status of exists is false
 				{
-				 errorMessage = '<p>Login failed</p>';
-				 res.render('index', {title: 'Better Twitter', message: errorMessage });
+				 res.render('index', {title: 'Better Twitter', message: '<p>Login failed</p>' });
 				}
 			
 			});
@@ -64,7 +63,7 @@ router.get('/', function(req, res, next) {
 //posts display for logged in user
 router.get('/posts', function(req,res,net){
 	postMaster.displayPostsPage(function (result) {
-		res.render('posts', {title: 'BETTER TWITTER 2', text: result})
+		res.render('index', {title: 'BETTER TWITTER 2', message: '<p>Please log in</p>'})
 	});
 });
 
@@ -124,7 +123,7 @@ router.get('/registration/', function (req, res, next) {
 		emailFinal = emailTemp;
 	}
 	if (!error) {
-		checkUniqueName(usernameTemp, function(result){ 
+		postMaster.checkUniqueName(usernameTemp, function(result){ 
 			if (result) {
 				knex('users').insert({name: usernameTemp, password: passwordTemp, email: emailTemp}).then();
 				res.render('index', { title: 'Better Twitter' });
