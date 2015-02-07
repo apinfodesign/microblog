@@ -5,6 +5,7 @@ var knex = require('knex')(development);
 
 function checkUserExists (username, pword, callback){
 	var result= true;
+ 
 	var id ="";
 	knex('users').where({name: username, password: pword}).select('id').then( function (allpairs) { 
 		if (allpairs.length === 0){
@@ -14,6 +15,7 @@ function checkUserExists (username, pword, callback){
 		{
 			id=allpairs[0].id  
 		}
+ 
   	callback(result, id);
  	});
 };   //dh
@@ -25,12 +27,12 @@ function displayPostsPage(callback){
 	
 	knex.select('users.name', 'posts.text').from('posts').leftJoin('users', 'posts.author_id', 'users.id').then( function (authortext) { 
 		authortext.forEach( function (obj) {
-			contents += '<h3>';
-			contents += obj.name;
-			contents += '</h3>';
-			contents += '<p>';
-			contents += obj.text;
-			contents += '</p>';
+			contents = '</p>' + contents;
+			contents = obj.text + contents;
+			contents = '<p>' + contents;
+			contents = '</h3>' + contents;
+			contents = obj.name + contents;
+			contents = '<h3>' + contents;
 		});
   	callback(contents);
  	});
@@ -55,7 +57,9 @@ function checkLoggedInStatus(cookies, callback){
 
 	console.log("Seconds since last visit = " +  (Date.now() - previousCookieTime)/1000  );
  
+ 
  	if ( ((Date.now() - previousCookieTime)/1000)  < 3000 )
+ 
 		{callback(true) }
 	else
 		{callback(false) }

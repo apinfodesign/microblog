@@ -22,15 +22,14 @@ router.get('/', function(req, res, next) {
 			}	
 		else  //checkLoggedInStatus is FALSE - USER HAS NO RECENT COOKIE
 		{
-			postMaster.checkUserExists(usernameReg, passwordReg, function (result) {
-				console.log('successful login status is ' + result);
-				if(result)  //status TRUE - USER EXISTS and COOKIE IS OLD
-							// 
+ 
+			postMaster.checkUserExists(usernameReg, passwordReg, function (result, id) {
+				console.log('successfull login status is ' + result);
+				if(result)  //status TRUE
 				{
 					res.cookie('last-login-time', Date.now());
-					res.cookie('authorID', id);
-
-					res.redirect('/posts');
+					res.cookie('id', id);
+ 					res.redirect('/posts');
  				}
 				else   //status FALSE - USER DOES NOT EXIST and COOKIE IS OLD
 					   // 
@@ -49,12 +48,22 @@ router.get('/posts', function(req,res,net){
 		console.log('logged in status is ' + result);
 		if (result)  //status TRUE
 			{
-				res.cookie('last-login-time', Date.now());
-				postMaster.displayPostsPage(function (result) {
-					res.render('posts', {title: 'Better Twitter Posts Page',
-					            text: result})
-				});
-			}
+ 
+				console.log('req.query.post is ' + req.query.post + '\nreq.cookies[\'last-post\'] is ' + req.cookies['last-post']);
+				if (req.query.post !== req.cookies['last-post'] && req.query.post !== undefined && req.query.post !== '') {
+					var newpost = req.query.post;
+					res.cookie('last-post', newpost);
+					var id = req.cookies.id;
+					knex('posts').insert({author_id: id, text: newpost }).then();
+				}
+				
+				setTimeout(function () {
+					res.cookie('last-login-time', Date.now());
+					postMaster.displayPostsPage(function (result) {
+						res.render('posts', {title: 'BETTER TWITTER 2', text: result})
+					});
+				}, 100);
+ 			}
 		else
 			{
 				res.redirect('/');
