@@ -27,15 +27,8 @@ router.get('/', function(req, res, next) {
 				console.log('successfull login status is ' + result);
 				if(result)  //status TRUE
 				{
-					res.cookie('last-login-time', Date.now() ) ;
+					res.cookie('last-login-time', Date.now());
 					res.redirect('/posts');
-
-		//  		 	console.log("THIS MANY SECONDS since last visit = " +  
-		// 		 		(date.getTime() - previousCookieTime)/1000  );
-		
-						//make user logged in
-					//postMaster.displayPostsPage();    //display posts page
-					console.log("cookie set and ready to display a page")
 				}
 				else   //status of exists is false
 				{
@@ -58,7 +51,7 @@ router.get('/posts', function(req,res,net){
 		console.log('logged in status is ' + result);
 		if (result)  //status TRUE
 			{
-				console.log ("dipslayPostsPage should happen here")
+				res.cookie('last-login-time', Date.now());
 				postMaster.displayPostsPage(function (result) {
 					res.render('posts', {title: 'BETTER TWITTER 2', text: result})
 				});
