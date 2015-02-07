@@ -54,8 +54,19 @@ router.get('/', function(req, res, next) {
 
 //posts display for logged in user
 router.get('/posts', function(req,res,net){
-	postMaster.displayPostsPage(function (result) {
-		res.render('posts', {title: 'BETTER TWITTER 2', text: result})
+	postMaster.checkLoggedInStatus(req.cookies, function(result) {
+		console.log('logged in status is ' + result);
+		if (result)  //status TRUE
+			{
+				console.log ("dipslayPostsPage should happen here")
+				postMaster.displayPostsPage(function (result) {
+					res.render('posts', {title: 'BETTER TWITTER 2', text: result})
+				});
+			}
+		else
+			{
+				res.redirect('/');
+			}
 	});
 });
 
