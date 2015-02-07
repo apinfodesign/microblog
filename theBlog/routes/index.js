@@ -13,31 +13,26 @@ router.get('/', function(req, res, next) {
   	console.log(usernameReg + " is usernameReg");
  	console.log(passwordReg + " is passwordReg");
 
-
  	postMaster.checkLoggedInStatus(req.cookies, function(result) {
 		console.log('logged in status is ' + result);
-		if (result)  //status TRUE
+		if (result)  //status TRUE - USER HAS RECENT COOKIE
 			{
 				console.log ("dipslayPostsPage should happen here")
 				res.redirect('/posts');
 			}	
-		else  //checkLoggedInStatus is FALSE
+		else  //checkLoggedInStatus is FALSE - USER HAS NO RECENT COOKIE
 		{
 			postMaster.checkUserExists(usernameReg, passwordReg, function (result) {
-				console.log('successfull login status is ' + result);
-				if(result)  //status TRUE
+				console.log('successful login status is ' + result);
+				if(result)  //status TRUE - USER EXISTS and COOKIE IS OLD
+							// 
 				{
 					res.cookie('last-login-time', Date.now() ) ;
 					res.redirect('/posts');
-
-		//  		 	console.log("THIS MANY SECONDS since last visit = " +  
-		// 		 		(date.getTime() - previousCookieTime)/1000  );
-		
-						//make user logged in
-					//postMaster.displayPostsPage();    //display posts page
 					console.log("cookie set and ready to display a page")
 				}
-				else   //status of exists is false
+				else   //status FALSE - USER DOES NOT EXIST and COOKIE IS OLD
+					   // 
 				{
 				 res.render('index', {title: 'Better Twitter', message: '<p>Login failed</p>' });
 				}
