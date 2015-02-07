@@ -27,24 +27,20 @@ router.get('/', function(req, res, next) {
 				if(result)  //status TRUE - USER EXISTS and COOKIE IS OLD
 							// 
 				{
-					res.cookie('last-login-time', Date.now() ) ;
+					res.cookie('last-login-time', Date.now());
+					res.cookie('authorID', id);
+
 					res.redirect('/posts');
-					console.log("cookie set and ready to display a page")
-				}
+ 				}
 				else   //status FALSE - USER DOES NOT EXIST and COOKIE IS OLD
 					   // 
 				{
 				 res.render('index', {title: 'Better Twitter', message: '<p>Login failed</p>' });
 				}
-			
 			});
 		}
 	})
 });
-
-
-
-
 
 
 //posts display for logged in user
@@ -53,9 +49,10 @@ router.get('/posts', function(req,res,net){
 		console.log('logged in status is ' + result);
 		if (result)  //status TRUE
 			{
-				console.log ("dipslayPostsPage should happen here")
+				res.cookie('last-login-time', Date.now());
 				postMaster.displayPostsPage(function (result) {
-					res.render('posts', {title: 'BETTER TWITTER 2', text: result})
+					res.render('posts', {title: 'Better Twitter Posts Page',
+					            text: result})
 				});
 			}
 		else

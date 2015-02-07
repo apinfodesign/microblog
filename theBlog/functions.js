@@ -12,7 +12,7 @@ function checkUserExists (username, pword, callback){
 		}  //if any results returned, then false	
 		else
 		{
-			id=allpairs[0].id
+			id=allpairs[0].id  
 		}
   	callback(result, id);
  	});
@@ -55,7 +55,7 @@ function checkLoggedInStatus(cookies, callback){
 
 	console.log("Seconds since last visit = " +  (Date.now() - previousCookieTime)/1000  );
  
- 	if ( ((Date.now() - previousCookieTime)/1000)  < 10 )
+ 	if ( ((Date.now() - previousCookieTime)/1000)  < 3000 )
 		{callback(true) }
 	else
 		{callback(false) }
