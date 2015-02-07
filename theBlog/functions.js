@@ -2,7 +2,6 @@ var development = require('./knexfile.js').development;
 var knex = require('knex')(development);
 
 
-
 function checkUserExists (username, pword, callback){
 	var result= true;
  
@@ -20,23 +19,49 @@ function checkUserExists (username, pword, callback){
  	});
 };   //dh
 
-
-
-function displayPostsPage(callback){
+///THIS VERSION IS DEPRECIATED
+function displayPostsPageORIGINAL(callback){
 	var contents= '';
 	
 	knex.select('users.name', 'posts.text').from('posts').leftJoin('users', 'posts.author_id', 'users.id').then( function (authortext) { 
 		authortext.forEach( function (obj) {
-			contents = '</p>' + contents;
+			contents = '</div>' + contents;
 			contents = obj.text + contents;
-			contents = '<p>' + contents;
-			contents = '</h3>' + contents;
+			contents = '<div class="posts" > ' + contents;
+			contents = '</div>' + contents;
 			contents = obj.name + contents;
-			contents = '<h3>' + contents;
+			contents = '<div class ="name"> User Name: ' + contents;
 		});
   	callback(contents);
  	});
 };    //dh
+
+//  NEW VERSION OF displayPostsPage MH
+function displayPostsPage(callback){
+	var contents= '';
+	var somePosts=[];
+	
+	knex.select('users.name', 'posts.text').from('posts').leftJoin('users', 'posts.author_id', 'users.id').then( function (authortext) { 
+		authortext.forEach( function (obj) {
+
+			//ASSEMBLE ONE ELEMENT
+				contents = '<div class="name"> User Name: ' + obj.name + '</div>' + '<div class= posts > ' + obj.text +'</div>' ;
+				//	console.log(contents);
+			//PUSH ELEMENT TO ARRAY
+				somePosts.push(contents);   //ASSEMBLE ARRAY
+				//	console.log (somePosts + " is somePosts");
+		});
+	somePosts.reverse();   		//REVERSE ARRAY ORDER 
+	var reducedPosts = somePosts.slice(0,6);      //KEEP FIRST N ELEMENTS ONLY
+	var stringifiedPosts = reducedPosts.join('');   	//TRANSFORM TO STRING
+				 console.log("UUUUUUUUUUUUUUUU  " + stringifiedPosts + " is somePosts string");
+	contents=stringifiedPosts;			//HAND TO CONTENTS
+  	callback(contents);			//HAND TO CALLBACK
+ 	});
+};    //mh
+
+
+
 
 
 function checkUniqueName (username, callback){
