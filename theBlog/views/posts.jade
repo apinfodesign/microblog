@@ -3,11 +3,12 @@ extends layout
 block content
 	h1= title 
 	h3 Write a post.
-	button#logout Log Me Out  
-	form
-		p Just write some text.
-		input#post(type='text', name='post')
-		button Publish
+ 	button#logout Logout
+	form#postForm
+		#postHolder
+			p Just write some text.
+			textarea#post(name='post', value='')
+			button#postButton Publish
 	!= message
 	!= text
 	script(src='/javascripts/logoutscript.js')
