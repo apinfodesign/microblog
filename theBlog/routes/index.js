@@ -3,7 +3,15 @@ var router = express.Router();
 var development = require('../knexfile.js').development;
 var knex = require('knex')(development);
 var postMaster = require('../functions.js');
+ 
+function readFromCacheOrContinueToDatabase(){
+	//check cache for current user
+		//if user posts present
 
+
+};
+
+ 
 //RECEIVES request cookies
 	//OUTPUTS request cookies
 		//RECEIVES request cookies and checkLoggedInStatus function
@@ -36,18 +44,27 @@ router.get('/', function(req, res, next) {
 					res.redirect('/posts');						 //REDIRECT TO POSTS PAGE
 				}
 				else { //status FALSE - USER DOES NOT EXIST and COOKIE IS OLD
-					res.render('index', {title: 'Better Twitter', message: '<p>Login failed</p>' });
+ 					res.render('index', {title: 'Better Twitter', message: '<p>Login failed</p>' });
 				}
 			});  //close checkUserExists
  		}
  	});  //close checkLoggedInStatus
 }); // close router.get
+ 
 
 //posts display for logged in user
-router.get('/posts', function(req,res,net){      
+router.get('/posts', function(req,res,next){      
 	//AS USUAL, READ REQUEST COOKIES, RETURN/DO CALLBACK FUNCTION
 
-	//RECEIVES: req.cookies and a call back function
+	if (req.query.logoutRequest === true)
+		{
+		console.log("logout request received");
+		res.clearCookie('last-login-time'); 
+
+		res.redirect('/'); 
+		}
+
+ 	//RECEIVES: req.cookies and a call back function
 		//RECEIVES:  user logged in status
 			//OUTPUTS:  saves the user post
 			//OUTPUTS:  display the posts list
@@ -58,6 +75,7 @@ router.get('/posts', function(req,res,net){
 			{
  				//IF STATEMENT - AVOID IDENTICAL POST AND AVOID UNDEFINED POST AND AVOID EMPTY POST - IF SO, SAVE NEW POST
 				console.log('req.query.post is ' + req.query.post + '\nreq.cookies[\'last-post\'] is ' + req.cookies['last-post']); 
+
 				if (req.query.post !== req.cookies['last-post'] && req.query.post !== undefined && req.query.post !== '') {
 					var newpost = req.query.post;    //SET NEWPOST TO USER req.query.post
 					res.cookie('last-post', newpost);  //SET NEW COOKIE "last-post" to prevent redundant post
@@ -67,18 +85,16 @@ router.get('/posts', function(req,res,net){
 				
 				setTimeout(function () {
 					res.cookie('last-login-time', Date.now());  //RESET TIMEOUT COOKIE BECAUSE USER RESPONDED
-
-				//	var thecu	rrentuser = id;  //PASS IN THE ID OF CURRENTUSER TO DISPLAYPOSTSPAGE
-
 					postMaster.displayPostsPage(function (result) {
 						var welcomeMessage = ("<p>Welcome "  +  req.cookies.name  + '!</p>')
+ 
 						res.render('posts', {title: 'BETTER TWITTER', text: result, message: welcomeMessage,}) 
 					});  // RENDER POST PAGE WITH title, text ????? and userName ????   
 				}, 500);   // WAIT 100 (MILISECONDS?) BEFORE EXECUTING ALL OF ABOVE.
- 			}
+  			}
 		else
-			{	console.log("User not logged in message at KKKKKKKKKKKKKKKKKKKKKKKKKKK")
-				res.redirect('/');   //USER NOT LOGGED IN?   UNSURE IF THIS CAN EVER BE REACHED HERE? 
+			{	console.log("User not logged in - Message KKKKKK")
+				res.redirect('/');   //USER NOT LOGGED IN 
 			}
 	});
 });
@@ -160,6 +176,5 @@ router.get('/registration/', function (req, res, next) {
 }); //close router.get
 
 
- 
 
 module.exports = router;

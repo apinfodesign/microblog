@@ -22,47 +22,26 @@ function checkUserExists (username, pword, callback){
  	});
 };   //dh
 
-///THIS VERSION IS DEPRECIATED  -
-function displayPostsPageORIGINAL(callback){
-	var contents= '';
-	
-	knex.select('users.name', 'posts.text').from('posts').leftJoin('users', 'posts.author_id', 'users.id').then( function (authortext) { 
-		authortext.forEach( function (obj) {
-			contents = '</div>' + contents;
-			contents = obj.text + contents;
-			contents = '<div class="posts" > ' + contents;
-			contents = '</div>' + contents;
-			contents = obj.name + contents;
-			contents = '<div class ="name"> User Name: ' + contents;
-		});
-  	callback(contents);
- 	});
-};    //dh
 
 //  NEW VERSION OF displayPostsPage MH
 function displayPostsPage(callback){
 	var contents= '';
 	var somePosts=[];
  	
- 
 	knex.select('users.name', 'posts.text').from('posts').leftJoin('users', 'posts.author_id', 'users.id').then( function (authortext) { 
 		authortext.forEach( function (obj) {
 													//ASSEMBLE ONE ELEMENT
 			contents = '<div class=\'posts\'><h3> ' + obj.name + '</h3>' + '<p> ' + obj.text +'</p></div>' ;
 			somePosts.push(contents);   			//ASSEMBLE ARRAY
-			//currentUserName = obj.name;
  		});
+
 	somePosts.reverse();   							//REVERSE ARRAY ORDER 
 	var reducedPosts = somePosts.slice(0,6);      	//KEEP MOST RECENT N ELEMENTS ONLY
 	var stringifiedPosts = reducedPosts.join('');   //TRANSFORM TO STRING, JOIN USING EMPTY CHARACTER (NO COMMA)
-				 				//console.log("UUUUUUUUUUUUUUUU  " + stringifiedPosts + " is somePosts string");
- 
-	//DOES NOT INSERT CURRENT USER ON FIRST LOGIN AS NEW USER - REFLECTS CURRENT USER AFTER FIRST POST
-	contents= stringifiedPosts;	//PASS TO CONTENTS, INCLUDE USERNAME
+   	contents= stringifiedPosts;	//PASS TO CONTENTS, INCLUDE USERNAME
   	callback(contents);								//PASS TO CALLBACK
  	});
 };    //mh
-
 
 //takes a user name and a call back function >>>>   returns result true or false
 function checkUniqueName (username, callback){
@@ -75,7 +54,6 @@ function checkUniqueName (username, callback){
   	callback(result);
  	});
 };
-
 
 //read and evaluate cookie - takes cookie object returns true/false
 function checkLoggedInStatus(cookies, callback){
@@ -101,11 +79,7 @@ function checkLoggedInStatus(cookies, callback){
 function checkUserCookieIDmatchesUser(cookies, callback){
    var userCookieID = cookies['id'];
    console.log("The user Cookie id number is " + userCookieID);
-
-
-
 };
-
 
 module.exports = {
 	'checkUniqueName': checkUniqueName,
