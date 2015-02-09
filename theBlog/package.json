@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "test":"`npm bin`/jasmine",
+    "test": "`npm bin`/jasmine",
     "start": "node ./bin/www"
   },
   "dependencies": {
@@ -16,6 +16,7 @@
     "knex": "^0.7.3",
     "morgan": "~1.5.1",
     "pg": "^4.2.0",
+    "redis": "^0.12.1",
     "serve-favicon": "~2.2.0"
   }
 }
