@@ -16,23 +16,14 @@ nav {
 }
 
 .posts {
-	background-color: #666666; 
+	background-color: #888888; 
 	color: white;
 	font-size: 12px;
 	width 400px;
 	border-color: black;  
-	border: 1px;
+	border-radius: 5px;
 	padding: 10px;
-}
-
-.name {
-	background-color: #666666; 
-	color: white;
-	font-size: 18px;
-	width 400px;  
-	border-color: black;  
-	border-width: 1px;
-	margin-top: 10px;
+	margin:10px auto;
 }
 
 #postButton {
@@ -41,7 +32,7 @@ nav {
 	background: #70A0FF;
 	font-size: 20px;
 	color: white;
-	border-radius: 5%;
+	border-radius: 5px;
 	clear: left;
 }
 
