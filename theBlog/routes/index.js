@@ -4,9 +4,6 @@ var development = require('../knexfile.js').development;
 var knex = require('knex')(development);
 var postMaster = require('../functions.js');
 
-var usernameReg;
-var passwordReg;
-
 //RECEIVES request cookies
 	//OUTPUTS request cookies
 		//RECEIVES request cookies and checkLoggedInStatus function
@@ -18,82 +15,33 @@ var passwordReg;
 /* GET SIGN IN page. */
 router.get('/', function(req, res, next) {
  
-    usernameReg = req.query.usernameRegistered;    //put incoming usernameRegistered in local var
-    passwordReg = req.query.passwordRegistered;
-
-  	console.log(usernameReg + " is usernameReg");     //log current usernameReg
- 	console.log(passwordReg + " is passwordReg");
-
+  var usernameReg = req.query.usernameRegistered;    
+  var passwordReg = req.query.passwordRegistered;
 
  	postMaster.checkLoggedInStatus(req.cookies, function(result) {
 		console.log('logged in status is ' + result);
-		if (result===true)  //status TRUE - USER HAS RECENT COOKIE
-			{
-				console.log ("user has a recent cookie and is therefore logged in")
-				res.redirect('/posts');
-			}	
-		else  //checkLoggedInStatus is FALSE - USER HAS NO RECENT COOKIE
-			{
- 				console.log ("user LACKS a recent cookie and is therefore NOT logged in")
- 			}
- 	 });  //close checkLoggedInStatus
-
-
- 	postMaster.checkUserExists(usernameReg, passwordReg, function (result, id, name) {
-		console.log('CURRENT login status is ' + result);
-		if(result)  //status TRUE - USER DOES EXIST 
-			{
-			console.log ("USER EXISTS SO RESETTING COOKIE")
-
+		if (result===true) {  //status TRUE - USER HAS RECENT COOKIE
+		
+			res.redirect('/posts');
+		}	
+		else { //checkLoggedInStatus is FALSE - USER HAS NO RECENT COOKIE
+			postMaster.checkUserExists(usernameReg, passwordReg, function (result, id, name) {
+				console.log('CURRENT login status is ' + result);
+				if(result)  //status TRUE - USER DOES EXIST 
+				{
 					res.cookie('last-login-time', Date.now());   //SET NEW TIME COOKIE
-				//	res.cookie('rememberme', '1', { maxAge: 10000, httpOnly: true });
+//				res.cookie('rememberme', '1', { maxAge: 10000, httpOnly: true });
 					res.cookie('id', id);                        //SET NEW ID COOKIE
- 					res.cookie('name', name);    //ALSO SEND USER NAME TO COOKIE
- 					res.redirect('/posts');						 //REDIRECT TO POSTS PAGE
-  			}
-		else   //status FALSE - USER DOES NOT EXIST and COOKIE IS OLD
-				// 
-			{
-			console.log ("USER DOES NOT EXIST SO NOT RESETTING COOKIE")
-				 	res.render('index', {title: 'Better Twitter', message: '<p>Login failed</p>' });
-			}
-		});  //close checkUserExists
-	  
- }); // close router.get
-			
-
-// XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-
-// 			postMaster.checkUserExists(usernameReg, passwordReg, function (result, id) {
-
-// 				console.log('CURRENT login status is ' + result);
-
-// 				if(result)  //status TRUE - USER DOES EXIST and COOKIE IS OLD
-// 				{
-
-// 				console.log ("LACKS RECENT COOKIE BUT USER EXISTS SO RESETTING COOKIE")
-
-// 					res.cookie('last-login-time', Date.now());   //SET NEW TIME COOKIE
-
-// 					res.cookie('rememberme', '1', { maxAge: 10000, httpOnly: true });
-
-// 					res.cookie('id', id);                        //SET NEW ID COOKIE
-//  				//	res.cookie('thecurrentuser', user);    //ALSO SEND USER NAME TO COOKIE
-//  					res.redirect('/posts');						 //REDIRECT TO POSTS PAGE
-//   				}
-// 				else   //status FALSE - USER DOES NOT EXIST and COOKIE IS OLD
-// 					   // 
-// 				{
-
-// 				console.log ("LACKS RECENT COOKIE AND DOES NOT EXIST SO NOT RESETTING COOKIE")
-
-// 				 res.render('index', {title: 'Better Twitter', message: '<p>Login failed</p>' });
-// 				}
-// 			});  //close checkUserExists
-// 		}  //close else
-// 	})  //checkLoggedInStatus
-// });   //router.get
-
+					res.cookie('name', name);    //ALSO SEND USER NAME TO COOKIE
+					res.redirect('/posts');						 //REDIRECT TO POSTS PAGE
+				}
+				else { //status FALSE - USER DOES NOT EXIST and COOKIE IS OLD
+					res.render('index', {title: 'Better Twitter', message: '<p>Login failed</p>' });
+				}
+			});  //close checkUserExists
+ 		}
+ 	});  //close checkLoggedInStatus
+}); // close router.get
 
 //posts display for logged in user
 router.get('/posts', function(req,res,net){      
@@ -124,9 +72,9 @@ router.get('/posts', function(req,res,net){
 
 					postMaster.displayPostsPage(function (result) {
 						var welcomeMessage = ("<p>Welcome "  +  req.cookies.name  + '!</p>')
-						res.render('posts', {title: 'BETTER TWITTER', text: result, message: welcomeMessage}) 
+						res.render('posts', {title: 'BETTER TWITTER', text: result, message: welcomeMessage,}) 
 					});  // RENDER POST PAGE WITH title, text ????? and userName ????   
-				}, 100);   // WAIT 100 (MILISECONDS?) BEFORE EXECUTING ALL OF ABOVE.
+				}, 500);   // WAIT 100 (MILISECONDS?) BEFORE EXECUTING ALL OF ABOVE.
  			}
 		else
 			{	console.log("User not logged in message at KKKKKKKKKKKKKKKKKKKKKKKKKKK")

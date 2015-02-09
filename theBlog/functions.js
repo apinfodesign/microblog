@@ -84,7 +84,7 @@ function checkLoggedInStatus(cookies, callback){
 	console.log("Seconds since last visit = " +  (Date.now() - previousCookieTime)/1000  );
  
  
- 	if ( ((Date.now() - previousCookieTime)/1000)  < 12 )
+ 	if ( ((Date.now() - previousCookieTime)/1000)  < 600 )
  
 		{callback(true) }
 	else
