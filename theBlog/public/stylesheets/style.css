@@ -14,3 +14,20 @@ nav {
 	width: auto;
 	text-align: center;
 }
+
+.posts {background-color: #666666; 
+		color: white;
+		font-size: 12px;
+		width 400px;
+		border-color: black;  
+		border: 1px;
+		padding: 10px;
+	}
+
+.name {background-color: #666666; 
+	   color: white;
+	   font-size: 18px;
+		width 400px;  
+		border-color: black;  
+		border-width: 1px;
+		margin-top: 10px;
