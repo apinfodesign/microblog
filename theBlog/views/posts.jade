@@ -3,12 +3,11 @@ extends layout
 block content
 	h1= title 
 	h3 Write a post.
-	button(type="button", onclick="window.open("/");" ) Logout  
-	a(href='/') Log Me Out
+	button#logout Log Me Out  
 	form
 		p Just write some text.
 		input#post(type='text', name='post')
 		button Publish
 	!= message
 	!= text
-
+	script(src='/javascripts/logoutscript.js')
