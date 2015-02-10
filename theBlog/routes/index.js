@@ -85,8 +85,10 @@ router.get('/posts', function(req,res,next){
 				if (req.query.post !== req.cookies['last-post'] && req.query.post !== undefined && req.query.post !== '') {
 					var newpost = req.query.post;    
 					res.cookie('last-post', newpost);  
-					var id = req.cookies.id;  //GRAB AUTHOR ID FOR DATABASE WRITE
-					knex('posts').insert({author_id: id, text: newpost }).then();   
+					var id = req.cookies.id; 
+					knex('posts').insert({author_id: id, text: newpost }).then();
+					client.del('postsText');
+					console.log('cache reset');  
 				}
 				
 				setTimeout(function () {
@@ -101,7 +103,7 @@ router.get('/posts', function(req,res,next){
 							console.log('get result is: ' + getResult);
 							console.log('postgres version showing after ' + ((Date.now() - time)/1000) + ' seconds');
 							postMaster.displayPostsPage(function (result) {
-								client.set('postsText', result, 'ex', '10', function (){time = Date.now()});
+								client.set('postsText', result, 'ex', '40', function (){time = Date.now()});
  
 								res.render('posts', {title: 'BETTER TWITTER', text: result, message: welMes,}) 
 							});
