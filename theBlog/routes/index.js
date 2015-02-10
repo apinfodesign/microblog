@@ -3,7 +3,7 @@ var router = express.Router();
 var development = require('../knexfile.js').development;
 var knex = require('knex')(development);
 var postMaster = require('../functions.js');
-
+ 
 var redis = require("redis"),
     client = redis.createClient(); 
 
@@ -28,7 +28,7 @@ client.set("key", "string val", function(err, response){
 //client.get('id', "author_id", "text", redis.print);
 
   
-
+ 
 function readFromCacheOrContinueToDatabase(){
 	//check cache for current user
 		//if user posts present and recent hand back
@@ -77,7 +77,7 @@ router.get('/', function(req, res, next) {
  	});  //close checkLoggedInStatus
 }); // close router.get
  
-
+var time;
 //posts display for logged in user
 router.get('/posts', function(req,res,next){      
 	//AS USUAL, READ REQUEST COOKIES, RETURN/DO CALLBACK FUNCTION
@@ -103,33 +103,33 @@ router.get('/posts', function(req,res,next){
 				console.log('req.query.post is ' + req.query.post + '\nreq.cookies[\'last-post\'] is ' + req.cookies['last-post']); 
 
 				if (req.query.post !== req.cookies['last-post'] && req.query.post !== undefined && req.query.post !== '') {
-					var newpost = req.query.post;    //SET NEWPOST TO USER req.query.post
-					res.cookie('last-post', newpost);  //SET NEW COOKIE "last-post" to prevent redundant post
+					var newpost = req.query.post;    
+					res.cookie('last-post', newpost);  
 					var id = req.cookies.id;  //GRAB AUTHOR ID FOR DATABASE WRITE
-					knex('posts').insert({author_id: id, text: newpost }).then();   //INSERT NEW POST FOR AUTHOR_ID
+					knex('posts').insert({author_id: id, text: newpost }).then();   
 				}
 				
 				setTimeout(function () {
-					res.cookie('last-login-time', Date.now());  //RESET TIMEOUT COOKIE BECAUSE USER RESPONDED
-
-
-				//if cache exists OR exists and is recent  
-					// use cache
-
-				
-				//else 
-					//	standard display
-					postMaster.displayPostsPage(function (result) {
-						var welcomeMessage = ("<p>Welcome "  +  req.cookies.name  + '!</p>')
-
-				//continue to render posts
-
-
- 	
-						res.render('posts', {title: 'BETTER TWITTER', text: result, message: welcomeMessage,}) 
-					});  // RENDER POST PAGE WITH title, text ????? and userName ????   
-				}, 500);   // WAIT 100 (MILISECONDS?) BEFORE EXECUTING ALL OF ABOVE.
-  			}
+ 
+					res.cookie('last-login-time', Date.now());
+					var welMes = ("<p>Welcome "  +  req.cookies.name  + '!</p>')
+					client.get('postsText', function (err, getResult) {
+						if (getResult !== null) {
+							console.log('get result is: ' + getResult);
+							console.log('cached version showing after ' + ((Date.now() - time)/1000) + ' seconds');
+								res.render('posts', {title: 'BETTER TWITTER', text: getResult, message: welMes,});
+						} else {
+							console.log('get result is: ' + getResult);
+							console.log('postgres version showing after ' + ((Date.now() - time)/1000) + ' seconds');
+							postMaster.displayPostsPage(function (result) {
+								client.set('postsText', result, 'ex', '10', function (){time = Date.now()});
+ 
+								res.render('posts', {title: 'BETTER TWITTER', text: result, message: welMes,}) 
+							});
+						}
+					});
+				}, 500);
+   			}
 		else
 			{	console.log("User not logged in - Message KKKKKK")
 				res.redirect('/');   //USER NOT LOGGED IN 

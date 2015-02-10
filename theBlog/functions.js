@@ -34,7 +34,7 @@ function displayPostsPage(callback){
 	knex.select('users.name', 'posts.text').from('posts').leftJoin('users', 'posts.author_id', 'users.id').then( function (authortext) { 
 		authortext.forEach( function (obj) {
 													//ASSEMBLE ONE ELEMENT
-			contents = '<div class="name"> ' + obj.name + '</div>' + '<div class= posts > ' + obj.text +'</div>' ;
+			contents = '<div class=\'posts\'><h3> ' + obj.name + '</h3>' + '<p> ' + obj.text +'</p></div>' ;
 			somePosts.push(contents);   			//ASSEMBLE ARRAY
 
 			////CREATE REDIS CACHE HERE
