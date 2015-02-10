@@ -3,10 +3,36 @@ var router = express.Router();
 var development = require('../knexfile.js').development;
 var knex = require('knex')(development);
 var postMaster = require('../functions.js');
- 
+
+var redis = require("redis"),
+    client = redis.createClient(); 
+
+var idValue=22;
+var authorIDvalue="joe";
+var text = "here is my post ";
+
+client.set("key", "string val", function(err, response){
+  client.get("key", function(err, response){
+     console.log(response);
+  	
+  });
+});
+
+// console.log( key);
+
+// client.mset("id", idValue, "author_id", authorIDvalue, "text", text, redis.print);
+// console.log (id +  author_id + text);
+
+
+
+//client.get('id', "author_id", "text", redis.print);
+
+  
+
 function readFromCacheOrContinueToDatabase(){
 	//check cache for current user
-		//if user posts present
+		//if user posts present and recent hand back
+		//else continue to current function
 
 
 };
@@ -85,9 +111,21 @@ router.get('/posts', function(req,res,next){
 				
 				setTimeout(function () {
 					res.cookie('last-login-time', Date.now());  //RESET TIMEOUT COOKIE BECAUSE USER RESPONDED
+
+
+				//if cache exists OR exists and is recent  
+					// use cache
+
+				
+				//else 
+					//	standard display
 					postMaster.displayPostsPage(function (result) {
 						var welcomeMessage = ("<p>Welcome "  +  req.cookies.name  + '!</p>')
- 
+
+				//continue to render posts
+
+
+ 	
 						res.render('posts', {title: 'BETTER TWITTER', text: result, message: welcomeMessage,}) 
 					});  // RENDER POST PAGE WITH title, text ????? and userName ????   
 				}, 500);   // WAIT 100 (MILISECONDS?) BEFORE EXECUTING ALL OF ABOVE.

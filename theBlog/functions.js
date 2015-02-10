@@ -1,6 +1,7 @@
 var development = require('./knexfile.js').development;
 var knex = require('knex')(development);
 
+
 //
 function checkUserExists (username, pword, callback){
 	var result= true;
@@ -27,18 +28,25 @@ function checkUserExists (username, pword, callback){
 function displayPostsPage(callback){
 	var contents= '';
 	var somePosts=[];
- 	
+ 	var userName;
+ 	var cache;
+
 	knex.select('users.name', 'posts.text').from('posts').leftJoin('users', 'posts.author_id', 'users.id').then( function (authortext) { 
 		authortext.forEach( function (obj) {
 													//ASSEMBLE ONE ELEMENT
 			contents = '<div class="name"> ' + obj.name + '</div>' + '<div class= posts > ' + obj.text +'</div>' ;
 			somePosts.push(contents);   			//ASSEMBLE ARRAY
+
+			////CREATE REDIS CACHE HERE
+			//userName = obj.name;
+			//client.lpush  cache.userName contents;
+			//console.log (cache.userName);
  		});
 
 	somePosts.reverse();   							//REVERSE ARRAY ORDER 
 	var reducedPosts = somePosts.slice(0,6);      	//KEEP MOST RECENT N ELEMENTS ONLY
 	var stringifiedPosts = reducedPosts.join('');   //TRANSFORM TO STRING, JOIN USING EMPTY CHARACTER (NO COMMA)
-   	contents= stringifiedPosts;	//PASS TO CONTENTS, INCLUDE USERNAME
+   	contents= stringifiedPosts;						//PASS TO CONTENTS, INCLUDE USERNAME
   	callback(contents);								//PASS TO CALLBACK
  	});
 };    //mh
