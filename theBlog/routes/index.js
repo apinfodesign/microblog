@@ -3,16 +3,36 @@ var router = express.Router();
 var development = require('../knexfile.js').development;
 var knex = require('knex')(development);
 var postMaster = require('../functions.js');
+ 
 var redis = require("redis"),
-	client = redis.createClient();
-	
-client.on("error", function (err) {
-	console.log(err);
+    client = redis.createClient(); 
+
+var idValue=22;
+var authorIDvalue="joe";
+var text = "here is my post ";
+
+client.set("key", "string val", function(err, response){
+  client.get("key", function(err, response){
+     console.log(response);
+  	
+  });
 });
+
+// console.log( key);
+
+// client.mset("id", idValue, "author_id", authorIDvalue, "text", text, redis.print);
+// console.log (id +  author_id + text);
+
+
+
+//client.get('id', "author_id", "text", redis.print);
+
+  
  
 function readFromCacheOrContinueToDatabase(){
 	//check cache for current user
-		//if user posts present
+		//if user posts present and recent hand back
+		//else continue to current function
 
 
 };
@@ -92,6 +112,7 @@ router.get('/posts', function(req,res,next){
 				}
 				
 				setTimeout(function () {
+ 
 					res.cookie('last-login-time', Date.now());
 					var welMes = ("<p>Welcome "  +  req.cookies.name  + '!</p>')
 					client.get('postsText', function (err, getResult) {
@@ -110,7 +131,7 @@ router.get('/posts', function(req,res,next){
 						}
 					});
 				}, 500);
-  			}
+   			}
 		else
 			{	console.log("User not logged in - Message KKKKKK")
 				res.redirect('/');   //USER NOT LOGGED IN 
