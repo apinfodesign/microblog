@@ -36,11 +36,6 @@ function displayPostsPage(callback){
 													//ASSEMBLE ONE ELEMENT
 			contents = '<div class=\'posts\'><h3> ' + obj.name + '</h3>' + '<p> ' + obj.text +'</p></div>' ;
 			somePosts.push(contents);   			//ASSEMBLE ARRAY
-
-			////CREATE REDIS CACHE HERE
-			//userName = obj.name;
-			//client.lpush  cache.userName contents;
-			//console.log (cache.userName);
  		});
 
 	somePosts.reverse();   							//REVERSE ARRAY ORDER 
@@ -81,7 +76,6 @@ function checkLoggedInStatus(cookies, callback){
 	//if no cookie return FALSE
 	//if cookie > 5 minutes old return FALSE
 	//if cookie is < 5 minutes old return TRUE
-
 
 //????????
 function checkUserCookieIDmatchesUser(cookies, callback){

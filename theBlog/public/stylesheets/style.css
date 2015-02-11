@@ -28,7 +28,7 @@ nav {
 
 #postButton {
 	width: 150px;
-	height: 50px;
+	height: 40px;
 	background: #70A0FF;
 	font-size: 20px;
 	color: white;
@@ -48,5 +48,5 @@ form {
 #post {
 	float: left;
 	width: 100%;
-	height: 100px;
+	height: 50px;
 }

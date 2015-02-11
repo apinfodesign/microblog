@@ -3,9 +3,12 @@ var router = express.Router();
 var development = require('../knexfile.js').development;
 var knex = require('knex')(development);
 var postMaster = require('../functions.js');
- 
-var redis = require("redis"),
+ var redis = require("redis"),
     client = redis.createClient(); 
+var uuid = require('node-uuid');    //one tme code
+var nonce = uuid.v4();     // example, delete
+var nodemailer = require('nodemailer');  
+ 
 
 var idValue=22;
 var authorIDvalue="joe";
@@ -18,26 +21,7 @@ client.set("key", "string val", function(err, response){
   });
 });
 
-// console.log( key);
 
-// client.mset("id", idValue, "author_id", authorIDvalue, "text", text, redis.print);
-// console.log (id +  author_id + text);
-
-
-
-//client.get('id', "author_id", "text", redis.print);
-
-  
- 
-function readFromCacheOrContinueToDatabase(){
-	//check cache for current user
-		//if user posts present and recent hand back
-		//else continue to current function
-
-
-};
-
- 
 //RECEIVES request cookies
 	//OUTPUTS request cookies
 		//RECEIVES request cookies and checkLoggedInStatus function
@@ -77,7 +61,9 @@ router.get('/', function(req, res, next) {
  	});  //close checkLoggedInStatus
 }); // close router.get
  
+
 var time;
+
 //posts display for logged in user
 router.get('/posts', function(req,res,next){      
 	//AS USUAL, READ REQUEST COOKIES, RETURN/DO CALLBACK FUNCTION
@@ -87,14 +73,14 @@ router.get('/posts', function(req,res,next){
 		console.log("logout request received");
 		res.clearCookie('last-login-time'); 
 
-		res.redirect('/'); 
+		res.redirect('/');
 		}
 
  	//RECEIVES: req.cookies and a call back function
 		//RECEIVES:  user logged in status
 			//OUTPUTS:  saves the user post
 			//OUTPUTS:  display the posts list
-	 
+	
 	postMaster.checkLoggedInStatus(req.cookies, function(result) {
 		console.log('logged in status is ' + result);       
 		if (result)  //status TRUE (USER LOGGED IN and NEW COOKIE SET) 
@@ -213,7 +199,104 @@ router.get('/registration/', function (req, res, next) {
 		res.render('registration', { title: 'Better Twitter', message: errorMessage, uname: usernameFinal, pass: passwordFinal, email: emailFinal });
 	}
  
-}); //close router.get
+}); //close router.get for registration
+
+
+//PRESENT PASSWORD RESET PAGE...
+router.get('/passwordreset/', function(req, res, next) {
+		res.render('passwordreset',{title: 'Better Twitter Password Reset'});
+		console.log('password reset in progress'  );
+});
+
+///////////////////////
+
+//LISTEN FOR USER RESPONSE IN FORM OF EMAIL
+
+router.post('/passwordreset/', function(req,res,next){
+		var userEmailTemp = req.body.userEmail;
+		if (userEmailTemp === undefined) 
+			{userEmailTemp = [];    //fix undefined email
+			}
+	//check email against database
+		knex('users').where({email: userEmailTemp}).select('email').then( function (match) { 
+			if (match.length === 0){
+				result=false;
+				console.log("the user reset email DOES NOT exist: " + userEmailTemp);
+
+				res.render('passwordreset',{title: 'Better Twitter Password Reset NOT Successful'});
+
+			}  //if any results returned, then false	
+			else{
+				result = true;
+				console.log(match);
+				console.log("the user reset email DOES exist: " + userEmailTemp);
+
+				res.render('passwordreset',{title: 'Better Twitter Password Reset Successful'});
+
+ 			} 	
+ 		 
+	 	});  //close callback function 
+}); // close router.get for passwordreset
+
+ 
+		
+	
+
+
+/////////////////////
+
+
+	
+
+
+ 
+
+
+
+		//check email against database
+			//if false
+				//send 'we do not recognize, try again or create a new account' message
+			//else true
+				// generate nonce
+				// mail a url http://bettertwitter.com/passwordreset/NONCE
+ 				// put NONCE in Redis
+					//call back listen for http://bettertwitter.com/NONCE  
+					//check Redis for non expired NONCE
+
+						//if false (don't recognize NONCE)
+							//send 'that response is not valid'
+							//send to home page /
+						//else true (recognize NONCE)
+							// give user password reset page
+							// listen for req.NewPassword
+							// write req.NewPassowrd to database
+							// send login page 
+//
+//		var nonce = uuid.v4();   							 //create one time code
+//		var mailBody = createVerificationEmail(nonce);
+		
+// sendMail(user.email, mailBody, function() {
+//     redisClient.set(nonce, user.id, function() {
+
+//     	console.log ("in redisClient.set function")
+//         // report to the user that their account has been created, and
+//         // they should check their email for a verification link
+//     });
+//	});
+
+
+
+//display response to valid user email 
+router.get('/passwordResetResponse', function(req, res, next){
+
+  res.send('Check your email for a reset URL.');
+
+});
+
+ 
+
+ 				// res.render('index', {title: 'Better Twitter', 
+ 				// 	   message: '<p>Password reset failed.  User supplied email not in database.</p>' });
 
 
 
