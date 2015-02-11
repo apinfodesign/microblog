@@ -10,11 +10,11 @@ var nonce = uuid.v4();     // example, delete
 var nodemailer = require('nodemailer');  
   
 // create reusable transporter object using SMTP transport 
-var transporter = nodemailer.createTransport({
-    service: 'Yahoo',
+var smtpTransporter = nodemailer.createTransport("SMTP",{
+    service: "Yahoo",
     auth: {
-        user: 'mikedavis432175@yahoo.com',        //testing email only
-        pass: 'beautifuldayintheneigbhorhood'
+        user: "mikedavis432175@yahoo.com",        //testing email only
+        pass: "importPassword"
     }
 });
 
@@ -231,7 +231,7 @@ router.post('/passwordreset/', function(req,res,next){
 				console.log("the user reset email DOES NOT exist: " + userEmailTemp);
 				res.render('passwordreset',{title: 'Better Twitter Password Reset NOT SUCCESSFUL'});
 			}  // close if condition - if any results returned, then false	
-			else{
+			else{	
 				result = true;
 				console.log(match);
 				console.log("the user reset email DOES exist: " + userEmailTemp);
@@ -244,17 +244,15 @@ router.post('/passwordreset/', function(req,res,next){
 				    text: 'Click the link to reset your Better Twitter password ✔', // plaintext body 
 				    html: '<b>Better Twitter is happy that you are resetting your password! ✔</b>' // html body 
 					};
-				 
 					// send mail with defined transport object 
-							transporter.sendMail(mailOptions, function(error, info){
-							    if(error){
-							        console.log(error);
-							    }else{
-							        console.log('Message sent: ' + info.response);
-							    }
-					});
-
-////end email sender
+					smtpTransporter.sendMail(mailOptions, function(error, info){
+					    if(error){
+					        console.log(error);
+					    }else{
+					        console.log('Message sent: ' + info.response);
+					    }
+					}); //close transporter.sendMail callback function
+////END EMAIL SENDER HERE   
        		}  //close else condition
  	 	});  //close callback function 
 }); // close router.get for passwordreset
