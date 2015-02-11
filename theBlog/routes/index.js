@@ -14,7 +14,7 @@ var smtpTransporter = nodemailer.createTransport("SMTP",{
     service: "Yahoo",
     auth: {
         user: "mikedavis432175@yahoo.com",        //testing email only
-        pass: "importPassword"
+        pass: "importPassword"	 //figure out a way to read this without including in github
     }
 });
 
