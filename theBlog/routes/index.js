@@ -8,7 +8,16 @@ var postMaster = require('../functions.js');
 var uuid = require('node-uuid');    //one tme code
 var nonce = uuid.v4();     // example, delete
 var nodemailer = require('nodemailer');  
- 
+  
+// create reusable transporter object using SMTP transport 
+var transporter = nodemailer.createTransport({
+    service: 'Yahoo',
+    auth: {
+        user: 'mikedavis432175@yahoo.com',        //testing email only
+        pass: 'beautifuldayintheneigbhorhood'
+    }
+});
+
 
 var idValue=22;
 var authorIDvalue="joe";
@@ -209,9 +218,7 @@ router.get('/passwordreset/', function(req, res, next) {
 });
 
 ///////////////////////
-
 //LISTEN FOR USER RESPONSE IN FORM OF EMAIL
-
 router.post('/passwordreset/', function(req,res,next){
 		var userEmailTemp = req.body.userEmail;
 		if (userEmailTemp === undefined) 
@@ -222,37 +229,38 @@ router.post('/passwordreset/', function(req,res,next){
 			if (match.length === 0){
 				result=false;
 				console.log("the user reset email DOES NOT exist: " + userEmailTemp);
-
-				res.render('passwordreset',{title: 'Better Twitter Password Reset NOT Successful'});
-
-			}  //if any results returned, then false	
+				res.render('passwordreset',{title: 'Better Twitter Password Reset NOT SUCCESSFUL'});
+			}  // close if condition - if any results returned, then false	
 			else{
 				result = true;
 				console.log(match);
 				console.log("the user reset email DOES exist: " + userEmailTemp);
+				res.render('passwordreset',{title: 'Better Twitter Password Reset SUCCESSFUL'});
+//SEND AN EMAIL HERE!   setup e-mail data with unicode symbols 
+				var mailOptions = {
+				    from: 'Better Twitter ✔ <mikedavis432175@yahoocom>', // sender address 
+				    to: userEmailTemp, // list of receivers (in our case only one)
+				    subject: 'Your Better Twitter Password Reset ✔', // Subject line 
+				    text: 'Click the link to reset your Better Twitter password ✔', // plaintext body 
+				    html: '<b>Better Twitter is happy that you are resetting your password! ✔</b>' // html body 
+					};
+				 
+					// send mail with defined transport object 
+							transporter.sendMail(mailOptions, function(error, info){
+							    if(error){
+							        console.log(error);
+							    }else{
+							        console.log('Message sent: ' + info.response);
+							    }
+					});
 
-				res.render('passwordreset',{title: 'Better Twitter Password Reset Successful'});
-
- 			} 	
- 		 
-	 	});  //close callback function 
+////end email sender
+       		}  //close else condition
+ 	 	});  //close callback function 
 }); // close router.get for passwordreset
 
- 
-		
-	
-
-
 /////////////////////
-
-
-	
-
-
- 
-
-
-
+//OUTLINE
 		//check email against database
 			//if false
 				//send 'we do not recognize, try again or create a new account' message
@@ -274,26 +282,9 @@ router.post('/passwordreset/', function(req,res,next){
 //
 //		var nonce = uuid.v4();   							 //create one time code
 //		var mailBody = createVerificationEmail(nonce);
-		
-// sendMail(user.email, mailBody, function() {
-//     redisClient.set(nonce, user.id, function() {
-
-//     	console.log ("in redisClient.set function")
-//         // report to the user that their account has been created, and
-//         // they should check their email for a verification link
-//     });
-//	});
-
-
-
-//display response to valid user email 
-router.get('/passwordResetResponse', function(req, res, next){
-
-  res.send('Check your email for a reset URL.');
-
-});
-
  
+
+
 
  				// res.render('index', {title: 'Better Twitter', 
  				// 	   message: '<p>Password reset failed.  User supplied email not in database.</p>' });
