@@ -8,6 +8,8 @@ var postMaster = require('../functions.js');
 var uuid = require('node-uuid');    //one tme code
 var nonce = uuid.v4();     // example, delete
 var nodemailer = require('nodemailer');  
+var crypto = require('crypto');
+
   
 // create reusable transporter object using SMTP transport 
 var smtpTransporter = nodemailer.createTransport("SMTP",{
@@ -23,12 +25,32 @@ var idValue=22;
 var authorIDvalue="joe";
 var text = "here is my post ";
 
+
+
+
+function realHash(input) {
+      return crypto.createHash('sha256').update(input).digest('hex');;
+};
+ 
+
+
+
 client.set("key", "string val", function(err, response){
   client.get("key", function(err, response){
      console.log(response);
   	
   });
 });
+
+
+function simpleHash(input) {
+    var hash = 0;
+
+    for (var i = 0; i < input.length; i++) {
+        hash = hash ^ input.charCodeAt(i);
+    }
+    return hash;
+}
 
 
 //RECEIVES request cookies
@@ -45,6 +67,10 @@ router.get('/', function(req, res, next) {
   var usernameReg = req.query.usernameRegistered;    
   var passwordReg = req.query.passwordRegistered;
 
+  console.log(passwordReg + " is passwordReg")
+  //passwordReg = simpleHash(passwordReg);  // SECOND OF TWO PASSWORD HASHES
+  // THIS TIME WE HASH THE ENTERED PASSWORD TO CHECK AGAINST EXISTING VALUE IN DATABASE
+
  	postMaster.checkLoggedInStatus(req.cookies, function(result) {
 		console.log('logged in status is ' + result);
 		if (result===true) {  //status TRUE - USER HAS RECENT COOKIE
@@ -52,7 +78,12 @@ router.get('/', function(req, res, next) {
 			res.redirect('/posts');
 		}	
 		else { //checkLoggedInStatus is FALSE - USER HAS NO RECENT COOKIE
-			postMaster.checkUserExists(usernameReg, passwordReg, function (result, id, name) {
+
+ 			if (passwordReg !==undefined){
+				passwordReg = realHash(passwordReg);
+ 				}
+			// check user exists with user name and hashed user password
+ 			postMaster.checkUserExists(usernameReg, passwordReg, function (result, id, name) {
 				console.log('CURRENT login status is ' + result);
 				if(result)  //status TRUE - USER DOES EXIST 
 				{
@@ -177,7 +208,16 @@ router.get('/registration/', function (req, res, next) {
 		errorMessage +='<p>Invalid Password</p>';
 		error = true;
 	} else {
-		passwordFinal = passwordTemp;
+
+		if (passwordTemp !== undefined)
+
+		{	passwordTempHash = realHash(passwordTemp);  //PASSWORD HASH ON REGISTRATION
+		}
+		// passwordTempHash=passwordTemp;
+		passwordFinal = passwordTempHash;
+		console.log(passwordFinal + " is passwordFinal");
+		//passwordFinal= passordTemp;
+		passwordTemp=passwordFinal;  //will write this to database
 	}
 	
 	if (emailTemp === []) {

@@ -2,6 +2,16 @@ var development = require('./knexfile.js').development;
 var knex = require('knex')(development);
 
 
+function simpleHash(input) {
+    var hash = 0;
+
+    for (var i = 0; i < input.length; i++) {
+        hash = hash ^ input.charCodeAt(i);
+    }
+
+    return hash;
+}
+
 //
 function checkUserExists (username, pword, callback){
 	var result= true;
